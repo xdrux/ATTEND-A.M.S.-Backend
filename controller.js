@@ -17,7 +17,8 @@ const addCourse = (req, res) => {
     })
 
     // console.log(newCourse)
-    newCourse.save()
+    newCourse.save();
+    res.send({ status: "OK" })
 }
 
 const getClasses = async (req, res) => {
