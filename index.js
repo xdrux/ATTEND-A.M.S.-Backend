@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-
+import bodyParser from 'body-parser';
 import setUpRoutes from "./routes.js";
 
 const dbLink = "mongodb+srv://attendams:attendams@attendamsdb.2x0jpcj.mongodb.net/?retryWrites=true&w=majority";
@@ -21,6 +21,7 @@ db.once('open', () => {
 
 // initialize the server
 const app = express();
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
