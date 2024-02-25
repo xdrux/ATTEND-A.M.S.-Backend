@@ -23,6 +23,20 @@ const addCourse = (req, res) => {
     res.send({ status: "OK" })
 }
 
+const deleteCourse = async (req, res) => {
+    const request1 = await Class.deleteOne({ courseNameSection: req.body.courseNameSection });
+    const request2 = await Student.deleteMany({ courseNameSection: req.body.courseNameSection });
+    res.send({ status: "OK" })
+    // console.log(request);
+    // res.send(request);
+}
+
+const deleteAllStudents = async (req, res) => {
+    const request = await Student.deleteMany({ courseNameSection: req.body.courseNameSection });
+    console.log(request);
+    res.send(request);
+}
+
 const getClasses = async (req, res) => {
     let classes = [];
     const classesDocuments = await Class.find({});
@@ -90,6 +104,22 @@ const addStudent = async (req, res) => {
 
 }
 
+const deleteStudent = async (req, res) => {
+    // console.log(req.body);
+    try {
+        const student = await Student.deleteOne({
+            courseNameSection: req.body.courseNameSection,
+            fullName: req.body.fullName
+        });
+        console.log("Student document deleted:", student);
+        res.send({ status: "OK" });
+    } catch (error) {
+        console.error("Error deleting student document:", error);
+        res.status(500).send("Error deleting student document");
+    }
+
+}
+
 const getStudentsName = async (req, res) => {
     let students = [];
     console.log(req.body);
@@ -107,7 +137,7 @@ const downloadClassInfo = async (req, res) => {
 
     const students = await Student.find({ courseNameSection: req.body.courseNameSection });
     for (let i = 0; i < students.length; i++) {
-        studentNames.push(students[i].fullName);
+        studentNames.push(students[i].studentNumber);
         faceData.push(students[i].faceSamples);
     }
 
@@ -115,4 +145,4 @@ const downloadClassInfo = async (req, res) => {
 
 }
 
-export { addCourse, getClasses, addStudent, getStudentsName, downloadClassInfo }
+export { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, downloadClassInfo, deleteCourse, deleteAllStudents }
