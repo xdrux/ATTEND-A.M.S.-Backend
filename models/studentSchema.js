@@ -17,7 +17,11 @@ const studentSchema = new mongoose.Schema({
             },
             isPresent: {
                 type: String,
-                default: "NA",
+                default: "No",
+            },
+            timeIn: {
+                type: String,
+                default: "NA"
             },
         },
     ],
