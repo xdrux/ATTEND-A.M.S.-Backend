@@ -12,7 +12,7 @@ const studentSchema = new mongoose.Schema({
     attendanceData: [
         {
             date: {
-                type: Date,
+                type: String,
                 required: true,
             },
             isPresent: {
