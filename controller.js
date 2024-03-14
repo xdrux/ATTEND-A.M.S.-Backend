@@ -190,7 +190,7 @@ const logAttendance = async (req, res) => {
         }
 
         // Check if the attendance data for the given date exists
-        const attendanceIndex = student.attendanceData.findIndex(data => data.date === "Mon Mar 11 2024");
+        const attendanceIndex = student.attendanceData.findIndex(data => data.date === req.body.dateToday);
 
         const updateData = {};
         if (attendanceIndex !== -1) {
@@ -235,7 +235,7 @@ const cancelAttendance = async (req, res) => {
         }
 
         // Check if the attendance data for the given date exists
-        const attendanceIndex = student.attendanceData.findIndex(data => data.date === "Mon Mar 11 2024");
+        const attendanceIndex = student.attendanceData.findIndex(data => data.date === req.body.dateToday);
 
         const updateData = {};
         if (attendanceIndex !== -1) {
@@ -258,5 +258,16 @@ const cancelAttendance = async (req, res) => {
     }
 }
 
+const getClassStudents = async (req, res) => {
+    try {
+        const studentsDocuments = await Student.find({ courseNameSection: req.body.courseNameSection }).sort({ lastName: 1, firstName: 1 });
+        res.send(studentsDocuments);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+}
 
-export { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance }
+
+
+export { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents }

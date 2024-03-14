@@ -1,4 +1,4 @@
-import { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance } from "./controller.js";
+import { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents } from "./controller.js";
 
 const setUpRoutes = (app) => {
     app.post("/AddCourse", addCourse);
@@ -11,6 +11,7 @@ const setUpRoutes = (app) => {
     app.post("/deleteStudent", deleteStudent);
     app.post("/logAttendance", logAttendance);
     app.post("/cancelAttendance", cancelAttendance);
+    app.post("/getClassStudents", getClassStudents);
 }
 
 export default setUpRoutes;
