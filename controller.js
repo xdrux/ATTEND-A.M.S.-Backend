@@ -10,6 +10,9 @@ const addCourse = (req, res) => {
         courseName: req.body.courseName,
         courseCode: req.body.courseCode,
         courseSection: req.body.courseSection,
+        semester: req.body.semester,
+        acadYear: req.body.acadYear,
+        type: req.body.type,
         courseNameSection: req.body.courseNameSection,
         courseSchedule: req.body.courseSchedule,
         courseStartDate: req.body.courseStartDate,
@@ -191,6 +194,7 @@ const logAttendance = async (req, res) => {
 
         // Check if the attendance data for the given date exists
         const attendanceIndex = student.attendanceData.findIndex(data => data.date === req.body.dateToday);
+        const attendanceRecord = student.attendanceData.find(data => data.date === req.body.dateToday);
 
         const updateData = {};
         if (attendanceIndex !== -1) {
@@ -207,12 +211,14 @@ const logAttendance = async (req, res) => {
             res.send({ status: "failed", message: "There is no class today!" });
             return; // Exit the function if date not found
         }
+        console.log(attendanceRecord);
 
+        // const oldRecord = await Student.findOne({ _id: student._id }, { $set: updateData });
         // Update the student document using updateOne
         const updatedStudent = await Student.updateOne({ _id: student._id }, { $set: updateData });
 
         console.log('Attendance data updated successfully');
-        res.send({ status: "success", identity: student.fullName }); // Update response message
+        res.send({ status: "success", identity: student.fullName, oldRecord: attendanceRecord }); // Update response message
     } catch (error) {
         console.error('Error updating attendance data:', error);
         res.send({ status: "failed", message: "Error occured. Please try again." }); // Update response message on error
@@ -220,12 +226,12 @@ const logAttendance = async (req, res) => {
 }
 
 const cancelAttendance = async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     try {
         // Find the student by student number and course name section
         const student = await Student.findOne({
             studentNumber: req.body.studentNumber,
-            courseNameSection: req.body.courseNameSection,
+            courseNameSection: req.body.courseNameSection
         });
 
         if (!student) {
@@ -236,17 +242,22 @@ const cancelAttendance = async (req, res) => {
 
         // Check if the attendance data for the given date exists
         const attendanceIndex = student.attendanceData.findIndex(data => data.date === req.body.dateToday);
+        // const attendanceRecord = student.attendanceData.find(data => data.date === req.body.dateToday);
 
         const updateData = {};
         if (attendanceIndex !== -1) {
             // Update attendance data if found
             const section = await Class.findOne({ courseNameSection: req.body.courseNameSection });
+            updateData[`attendanceData.${attendanceIndex}.isPresent`] = req.body.isPresent;
 
-            updateData[`attendanceData.${attendanceIndex}.isPresent`] = "No";
-
-            updateData[`attendanceData.${attendanceIndex}.timeIn`] = "NA";
+            updateData[`attendanceData.${attendanceIndex}.timeIn`] = req.body.timeIn;
+        } else {
+            console.log('Date not found');
+            res.send({ status: "failed", message: "There is no class today!" });
+            return; // Exit the function if date not found
         }
 
+        // const oldRecord = await Student.findOne({ _id: student._id }, { $set: updateData });
         // Update the student document using updateOne
         const updatedStudent = await Student.updateOne({ _id: student._id }, { $set: updateData });
 
