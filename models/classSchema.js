@@ -8,6 +8,7 @@ const classSchema = new mongoose.Schema({
     courseNameSection: { type: String, required: true },
     semester: { type: String, required: true },
     acadYear: { type: String, required: true },
+    courseYear: { type: String, required: true },
     type: { type: String, required: true },
     courseSchedule: { type: Array, required: true },
     courseStartDate: { type: String, required: true },

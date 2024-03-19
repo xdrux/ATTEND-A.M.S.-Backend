@@ -8,7 +8,7 @@ const studentSchema = new mongoose.Schema({
     middleName: { type: String, required: false },
     fullName: { type: String, required: true },
     faceSamples: { type: Array, required: true },
-    courseNameSection: { type: String, required: true },
+    courseYear: { type: String, required: true },
     attendanceData: [
         {
             date: {
