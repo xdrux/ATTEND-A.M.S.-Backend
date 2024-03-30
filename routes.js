@@ -1,6 +1,10 @@
 import { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, getClassInfo, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents } from "./controller.js";
+import { signUp, login, checkIfLoggedIn } from "./auth_controller.js"
 
 const setUpRoutes = (app) => {
+    app.post("/signUp", signUp);
+    app.post("/login", login);
+    app.post("/checkIfLoggedIn", checkIfLoggedIn);
     app.post("/AddCourse", addCourse);
     app.get("/getClasses", getClasses);
     app.post("/AddStudent", addStudent);

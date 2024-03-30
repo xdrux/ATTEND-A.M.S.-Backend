@@ -152,7 +152,7 @@ const downloadClassInfo = async (req, res) => {
     let studentNames = [];
     let faceData = [];
 
-    const students = await Student.find({ courseNameSection: req.body.courseNameSection });
+    const students = await Student.find({ courseYear: req.body.courseYear });
     for (let i = 0; i < students.length; i++) {
         studentNames.push(students[i].studentNumber);
         faceData.push(students[i].faceSamples);
@@ -195,7 +195,7 @@ const logAttendance = async (req, res) => {
         // Find the student by student number and course name section
         const student = await Student.findOne({
             studentNumber: req.body.studentNumber,
-            courseNameSection: req.body.courseNameSection
+            courseYear: req.body.courseYear
         });
 
         if (!student) {
@@ -211,7 +211,7 @@ const logAttendance = async (req, res) => {
         const updateData = {};
         if (attendanceIndex !== -1) {
             // Update attendance data if found
-            const section = await Class.findOne({ courseNameSection: req.body.courseNameSection });
+            const section = await Class.findOne({ courseYear: req.body.courseYear });
             if (isTimeAfterWithBuffer(req.body.timeIn, section.courseStartTime)) {
                 updateData[`attendanceData.${attendanceIndex}.isPresent`] = "Late";
             } else {
@@ -243,7 +243,7 @@ const cancelAttendance = async (req, res) => {
         // Find the student by student number and course name section
         const student = await Student.findOne({
             studentNumber: req.body.studentNumber,
-            courseNameSection: req.body.courseNameSection
+            courseYear: req.body.courseYear
         });
 
         if (!student) {
@@ -259,7 +259,7 @@ const cancelAttendance = async (req, res) => {
         const updateData = {};
         if (attendanceIndex !== -1) {
             // Update attendance data if found
-            const section = await Class.findOne({ courseNameSection: req.body.courseNameSection });
+            const section = await Class.findOne({ courseYear: req.body.courseYear });
             updateData[`attendanceData.${attendanceIndex}.isPresent`] = req.body.isPresent;
 
             updateData[`attendanceData.${attendanceIndex}.timeIn`] = req.body.timeIn;
@@ -283,7 +283,7 @@ const cancelAttendance = async (req, res) => {
 
 const getClassStudents = async (req, res) => {
     try {
-        const studentsDocuments = await Student.find({ courseNameSection: req.body.courseNameSection }).sort({ lastName: 1, firstName: 1 });
+        const studentsDocuments = await Student.find({ courseYear: req.body.courseYear }).sort({ lastName: 1, firstName: 1 });
         res.send(studentsDocuments);
     } catch (error) {
         console.error(error);
