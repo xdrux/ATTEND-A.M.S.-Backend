@@ -60,37 +60,37 @@ const login = async (req, res) => {
 };
 
 
-const checkIfLoggedIn = (req, res) => {
+const checkIfLoggedIn = async (req, res) => {
+    try {
+        console.log(req.cookies);
 
-    if (!req.cookies || !req.cookies.authToken) {
-        // Scenario 1: FAIL - No cookies / no authToken cookie sent
-        return res.send({ isLoggedIn: false });
+        if (!req.cookies || !req.cookies.authToken) {
+            return res.send({ isLoggedIn: false });
+        }
+
+        // Validate token
+        const tokenPayload = await jwt.verify(
+            req.cookies.authToken,
+            "THIS_IS_A_SECRET_STRING"
+        );
+
+        const userId = tokenPayload._id;
+
+        // Check if user exists
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.send({ isLoggedIn: false });
+        }
+
+        // Token and user ID are valid
+        console.log("User is currently logged in");
+        return res.send({ isLoggedIn: true });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ success: false, message: "Internal server error" });
     }
+};
 
-    // Token is present. Validate it
-    return jwt.verify(
-        req.cookies.authToken,
-        "THIS_IS_A_SECRET_STRING",
-        (err, tokenPayload) => {
-            if (err) {
-                // Scenario 2: FAIL - Error validating token
-                return res.send({ isLoggedIn: false });
-            }
-
-            const userId = tokenPayload._id;
-
-            // check if user exists
-            return User.findById(userId, (userErr, user) => {
-                if (userErr || !user) {
-                    // Scenario 3: FAIL - Failed to find user based on id inside token payload
-                    return res.send({ isLoggedIn: false });
-                }
-
-                // Scenario 4: SUCCESS - token and user id are valid
-                console.log("user is currently logged in");
-                return res.send({ isLoggedIn: true });
-            });
-        });
-}
 
 export { signUp, login, checkIfLoggedIn }
