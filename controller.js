@@ -12,7 +12,7 @@ const addCourse = (req, res) => {
         courseSection: req.body.courseSection,
         semester: req.body.semester,
         acadYear: req.body.acadYear,
-        type: req.body.type,
+        classType: req.body.classType,
         courseYear: req.body.courseYear,
         courseNameSection: req.body.courseNameSection,
         courseSchedule: req.body.courseSchedule,
@@ -20,6 +20,7 @@ const addCourse = (req, res) => {
         courseEndDate: req.body.courseEndDate,
         courseStartTime: req.body.courseStartTime,
         courseEndTime: req.body.courseEndTime,
+        instructor: req.body.instructor
     })
 
     // console.log(newCourse)
@@ -46,7 +47,7 @@ const getClasses = async (req, res) => {
     let classesWithYear = [];
     let semester = [];
     let acadYear = [];
-    const classesDocuments = await Class.find({});
+    const classesDocuments = await Class.find({ instructor: req.query.user });
     for (let i = 0; i < classesDocuments.length; i++) {
         classes.push(classesDocuments[i].courseNameSection);
         classesWithYear.push(classesDocuments[i].courseYear);
@@ -134,7 +135,8 @@ const deleteStudent = async (req, res) => {
 
 const getClassInfo = async (req, res) => {
     const classInfo = await Class.findOne({ courseYear: req.body.courseYear });
-    res.send({ courseNameSection: classInfo.courseNameSection, semester: classInfo.semester, acadYear: classInfo.acadYear })
+    console.log(classInfo)
+    res.send({ courseNameSection: classInfo.courseNameSection, semester: classInfo.semester, acadYear: classInfo.acadYear, instructor: classInfo.instructor })
 }
 
 const getStudentsName = async (req, res) => {

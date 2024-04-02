@@ -9,12 +9,13 @@ const classSchema = new mongoose.Schema({
     semester: { type: String, required: true },
     acadYear: { type: String, required: true },
     courseYear: { type: String, required: true },
-    type: { type: String, required: true },
+    classType: { type: String, required: true },
     courseSchedule: { type: Array, required: true },
     courseStartDate: { type: String, required: true },
     courseEndDate: { type: String, required: true },
     courseStartTime: { type: String, required: true },
     courseEndTime: { type: String, required: true },
+    instructor: { type: String, required: true }
 });
 
 mongoose.model("ClassSchema", classSchema);
