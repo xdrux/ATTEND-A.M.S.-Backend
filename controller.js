@@ -11,6 +11,7 @@ const addCourse = (req, res) => {
         courseCode: req.body.courseCode,
         courseSection: req.body.courseSection,
         semester: req.body.semester,
+        gracePeriod: req.body.gracePeriod,
         acadYear: req.body.acadYear,
         classType: req.body.classType,
         courseYear: req.body.courseYear,
@@ -164,14 +165,14 @@ const downloadClassInfo = async (req, res) => {
 
 }
 
-const isTimeAfterWithBuffer = (time1, time2) => {
+const isTimeAfterWithBuffer = (time1, time2, gracePeriod) => {
     // Split the times into hours and minutes
     console.log(time1, time2)
     const [hours1, minutes1] = time1.split(':').map(Number);
     let [hours2, minutes2] = time2.split(':').map(Number);
 
-    // Add 15 minutes to the second time
-    minutes2 += 15;
+    // Add grace period minutes to the second time
+    minutes2 += Number(gracePeriod);
     if (minutes2 >= 60) {
         minutes2 -= 60;
         hours2 += 1;
@@ -202,7 +203,7 @@ const logAttendance = async (req, res) => {
 
         if (!student) {
             console.log('Student not found');
-            res.send({ status: "failed", message: "Error occured. Please try again." });
+            res.send({ status: "failed", message: "Student not found. Please try again." });
             return; // Exit the function if student not found
         }
 
@@ -214,7 +215,7 @@ const logAttendance = async (req, res) => {
         if (attendanceIndex !== -1) {
             // Update attendance data if found
             const section = await Class.findOne({ courseYear: req.body.courseYear });
-            if (isTimeAfterWithBuffer(req.body.timeIn, section.courseStartTime)) {
+            if (isTimeAfterWithBuffer(req.body.timeIn, section.courseStartTime, section.gracePeriod)) {
                 updateData[`attendanceData.${attendanceIndex}.isPresent`] = "Late";
             } else {
                 updateData[`attendanceData.${attendanceIndex}.isPresent`] = "Present";

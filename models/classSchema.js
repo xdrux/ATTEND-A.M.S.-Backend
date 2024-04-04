@@ -6,6 +6,7 @@ const classSchema = new mongoose.Schema({
     courseCode: { type: String, required: true },
     courseSection: { type: String, required: true },
     courseNameSection: { type: String, required: true },
+    gracePeriod: { type: Number, required: true },
     semester: { type: String, required: true },
     acadYear: { type: String, required: true },
     courseYear: { type: String, required: true },
