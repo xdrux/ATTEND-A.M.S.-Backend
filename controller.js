@@ -135,9 +135,13 @@ const deleteStudent = async (req, res) => {
 }
 
 const getClassInfo = async (req, res) => {
+    console.log(req.body)
     const classInfo = await Class.findOne({ courseYear: req.body.courseYear });
-    console.log(classInfo)
-    res.send({ courseNameSection: classInfo.courseNameSection, semester: classInfo.semester, acadYear: classInfo.acadYear, instructor: classInfo.instructor })
+    if (classInfo === null) {
+        res.send({ success: false })
+    } else {
+        res.send({ courseNameSection: classInfo.courseNameSection, semester: classInfo.semester, acadYear: classInfo.acadYear, instructor: classInfo.instructor })
+    }
 }
 
 const getStudentsName = async (req, res) => {
