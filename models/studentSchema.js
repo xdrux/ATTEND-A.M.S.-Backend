@@ -17,7 +17,7 @@ const studentSchema = new mongoose.Schema({
             },
             isPresent: {
                 type: String,
-                default: "No",
+                default: "Absent",
             },
             timeIn: {
                 type: String,
