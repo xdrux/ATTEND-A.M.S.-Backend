@@ -1,4 +1,4 @@
-import { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, getClassInfo, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents } from "./controller.js";
+import { addCourse, getClasses, addStudent, updateStudent, deleteStudent, getStudentInfo, getStudentsName, getClassInfo, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents } from "./controller.js";
 import { signUp, login, checkIfLoggedIn } from "./auth_controller.js"
 
 const setUpRoutes = (app) => {
@@ -8,6 +8,8 @@ const setUpRoutes = (app) => {
     app.post("/AddCourse", addCourse);
     app.get("/getClasses", getClasses);
     app.post("/AddStudent", addStudent);
+    app.post("/updateStudent", updateStudent);
+    app.post("/getStudentInfo", getStudentInfo);
     app.post("/getStudentsName", getStudentsName);
     app.post("/getClassInfo", getClassInfo);
     app.post("/downloadClassInfo", downloadClassInfo);

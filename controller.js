@@ -114,8 +114,39 @@ const addStudent = async (req, res) => {
     // console.log(classSched);
 
     res.send({ status: "OK" })
+}
 
+const updateStudent = async (req, res) => {
+    const studNum = req.body.studentNumber;
+    const courseYear = req.body.courseYear;
+    const middleName = req.body.middleName !== "" ? req.body.middleName + " " : "";
+    const updateData = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        middleName: req.body.middleName,
+        fullName: req.body.firstName + " " + middleName + req.body.lastName,
+        faceSamples: req.body.faceSamples
+    }
+    console.log(updateData)
+    try {
+        const updatedStudent = await Student.findOneAndUpdate(
+            { studentNumber: studNum, courseYear: courseYear },
+            updateData,
+            { new: true } // Return the updated document
+        );
 
+        if (!updatedStudent) {
+            // throw new Error('Student not found');
+            res.send({ success: false })
+        }
+
+        res.send({ success: true })
+
+        // console.log('Student updated successfully:', updatedStudent);
+    } catch (error) {
+        console.error('Error updating student:', error.message);
+        res.send({ success: false })
+    }
 }
 
 const deleteStudent = async (req, res) => {
@@ -132,6 +163,16 @@ const deleteStudent = async (req, res) => {
         res.status(500).send("Error deleting student document");
     }
 
+}
+
+const getStudentInfo = async (req, res) => {
+    const student = await Student.findOne({ fullName: req.body.fullName, courseYear: req.body.courseYear });
+    // console.log(student)
+    if (student === null) {
+        res.send({ success: false })
+    } else {
+        res.send({ studentNumber: student.studentNumber, firstName: student.firstName, lastName: student.lastName, middleName: student.middleName, faceSamples: student.faceSamples })
+    }
 }
 
 const getClassInfo = async (req, res) => {
@@ -300,4 +341,4 @@ const getClassStudents = async (req, res) => {
 
 
 
-export { addCourse, getClasses, addStudent, deleteStudent, getStudentsName, getClassInfo, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents }
+export { addCourse, getClasses, addStudent, updateStudent, deleteStudent, getStudentInfo, getStudentsName, getClassInfo, downloadClassInfo, deleteCourse, deleteAllStudents, logAttendance, cancelAttendance, getClassStudents }
