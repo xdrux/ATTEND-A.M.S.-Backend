@@ -181,7 +181,20 @@ const getClassInfo = async (req, res) => {
     if (classInfo === null) {
         res.send({ success: false })
     } else {
-        res.send({ courseNameSection: classInfo.courseNameSection, semester: classInfo.semester, acadYear: classInfo.acadYear, instructor: classInfo.instructor })
+        res.send({
+            courseNameSection: classInfo.courseNameSection, semester: classInfo.semester, acadYear: classInfo.acadYear, instructor: classInfo.instructor,
+            courseCode: classInfo.courseCode,
+            courseName: classInfo.courseName,
+            courseSection: classInfo.courseSection,
+            gracePeriod: classInfo.gracePeriod,
+            courseYear: classInfo.courseYear,
+            classType: classInfo.classType,
+            courseSchedule: classInfo.courseSchedule,
+            courseStartDate: classInfo.courseStartDate,
+            courseEndDate: classInfo.courseEndDate,
+            courseStartTime: classInfo.courseStartTime,
+            courseEndTime: classInfo.courseEndTime,
+        })
     }
 }
 
