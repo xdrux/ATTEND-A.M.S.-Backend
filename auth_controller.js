@@ -7,7 +7,7 @@ import UserSchema from './models/userSchema.js';
 // get user model registered in Mongoose
 const User = mongoose.model("UserSchema", UserSchema);
 
-
+// saving the new user
 const signUp = (req, res) => {
     const newuser = new User({
         email: req.body.email,
@@ -24,6 +24,7 @@ const signUp = (req, res) => {
 
 }
 
+// for logging in
 const login = async (req, res) => {
     try {
         const email = req.body.email.trim();
@@ -59,7 +60,7 @@ const login = async (req, res) => {
     }
 };
 
-
+// checking if the user is logged in
 const checkIfLoggedIn = async (req, res) => {
     try {
         console.log(req.cookies);

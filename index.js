@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import setUpRoutes from "./routes.js";
 
+// connect to mongoDB atlas
 const dbLink = "mongodb+srv://attendams:attendams@attendamsdb.2x0jpcj.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(
     dbLink

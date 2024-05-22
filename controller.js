@@ -5,6 +5,7 @@ import studentSchema from './models/studentSchema.js';
 const Class = mongoose.model("ClassSchema", classSchema);
 const Student = mongoose.model("StudentSchema", studentSchema);
 
+// for saving a new class
 const addCourse = (req, res) => {
     const newCourse = new Class({
         courseName: req.body.courseName,
@@ -24,25 +25,25 @@ const addCourse = (req, res) => {
         instructor: req.body.instructor
     })
 
-    // console.log(newCourse)
     newCourse.save();
     res.send({ status: "OK" })
 }
 
+//for deleting a class
 const deleteCourse = async (req, res) => {
     const request1 = await Class.deleteOne({ courseYear: req.body.courseYear });
     const request2 = await Student.deleteMany({ courseYear: req.body.courseYear });
     res.send({ status: "OK" })
-    // console.log(request);
-    // res.send(request);
 }
 
+//for deleting all students of a class
 const deleteAllStudents = async (req, res) => {
     const request = await Student.deleteMany({ courseYear: req.body.courseYear });
     console.log(request);
     res.send(request);
 }
 
+// getting classes of a specific instructor
 const getClasses = async (req, res) => {
     let classes = [];
     let classesWithYear = [];
@@ -59,6 +60,7 @@ const getClasses = async (req, res) => {
 
 }
 
+// generating atttence dates based on the class date range and class schedule
 const generateAttendanceDates = (startDate, endDate, classSchedule) => {
     const dates = [];
     let currentDate = new Date(startDate);
@@ -82,15 +84,11 @@ const generateAttendanceDates = (startDate, endDate, classSchedule) => {
     return dates;
 };
 
-
+// saving a new student
 const addStudent = async (req, res) => {
-    // console.log(req.body.courseNameSection);
     const classObj = await Class.find({ courseYear: req.body.courseYear });
-    // console.log(classObj);
     const classSched = classObj[0].courseSchedule;
-    // console.log(classObj[0].courseStartDate, classObj[0].courseEndDate);
 
-    // Assuming classObj[0].courseStartDate and classObj[0].courseEndDate are in ISO 8601 format
     const classDates = generateAttendanceDates(
         new Date(classObj[0].courseStartDate),
         new Date(classObj[0].courseEndDate),
@@ -111,11 +109,10 @@ const addStudent = async (req, res) => {
     })
     newStudent.save();
 
-    // console.log(classSched);
-
     res.send({ status: "OK" })
 }
 
+// updates the student's data
 const updateStudent = async (req, res) => {
     const studNum = req.body.studentNumber;
     const courseYear = req.body.courseYear;
@@ -141,16 +138,14 @@ const updateStudent = async (req, res) => {
         }
 
         res.send({ success: true })
-
-        // console.log('Student updated successfully:', updatedStudent);
     } catch (error) {
         console.error('Error updating student:', error.message);
         res.send({ success: false })
     }
 }
 
+// deletes a specific student
 const deleteStudent = async (req, res) => {
-    // console.log(req.body);
     try {
         const student = await Student.deleteOne({
             courseYear: req.body.courseYear,
@@ -165,9 +160,9 @@ const deleteStudent = async (req, res) => {
 
 }
 
+//  gets a student's info
 const getStudentInfo = async (req, res) => {
     const student = await Student.findOne({ fullName: req.body.fullName, courseYear: req.body.courseYear });
-    // console.log(student)
     if (student === null) {
         res.send({ success: false })
     } else {
@@ -175,8 +170,8 @@ const getStudentInfo = async (req, res) => {
     }
 }
 
+// gets a class' information
 const getClassInfo = async (req, res) => {
-    console.log(req.body)
     const classInfo = await Class.findOne({ courseYear: req.body.courseYear });
     if (classInfo === null) {
         res.send({ success: false })
@@ -198,6 +193,7 @@ const getClassInfo = async (req, res) => {
     }
 }
 
+// gets the name of all the students of a course
 const getStudentsName = async (req, res) => {
     let students = [];
     console.log(req.body);
@@ -209,6 +205,7 @@ const getStudentsName = async (req, res) => {
 
 }
 
+// downloads the face images of the students of a section
 const downloadClassInfo = async (req, res) => {
     let studentNames = [];
     let faceData = [];
@@ -223,6 +220,7 @@ const downloadClassInfo = async (req, res) => {
 
 }
 
+//checks if the student is late
 const isTimeAfterWithBuffer = (time1, time2, gracePeriod) => {
     // Split the times into hours and minutes
     console.log(time1, time2)
@@ -251,6 +249,8 @@ const isTimeAfterWithBuffer = (time1, time2, gracePeriod) => {
     return false;
 }
 
+
+// logs the attendance of a student
 const logAttendance = async (req, res) => {
     try {
         // Find the student by student number and course name section
@@ -284,9 +284,7 @@ const logAttendance = async (req, res) => {
             res.send({ status: "failed", message: "There is no class today!" });
             return; // Exit the function if date not found
         }
-        console.log(attendanceRecord);
 
-        // const oldRecord = await Student.findOne({ _id: student._id }, { $set: updateData });
         // Update the student document using updateOne
         const updatedStudent = await Student.updateOne({ _id: student._id }, { $set: updateData });
 
@@ -298,8 +296,8 @@ const logAttendance = async (req, res) => {
     }
 }
 
+// function to cancel the latest attendance
 const cancelAttendance = async (req, res) => {
-    // console.log(req.body)
     try {
         // Find the student by student number and course name section
         const student = await Student.findOne({
@@ -315,7 +313,6 @@ const cancelAttendance = async (req, res) => {
 
         // Check if the attendance data for the given date exists
         const attendanceIndex = student.attendanceData.findIndex(data => data.date === req.body.dateToday);
-        // const attendanceRecord = student.attendanceData.find(data => data.date === req.body.dateToday);
 
         const updateData = {};
         if (attendanceIndex !== -1) {
@@ -330,7 +327,6 @@ const cancelAttendance = async (req, res) => {
             return; // Exit the function if date not found
         }
 
-        // const oldRecord = await Student.findOne({ _id: student._id }, { $set: updateData });
         // Update the student document using updateOne
         const updatedStudent = await Student.updateOne({ _id: student._id }, { $set: updateData });
 
@@ -342,6 +338,7 @@ const cancelAttendance = async (req, res) => {
     }
 }
 
+// gets all the students' info
 const getClassStudents = async (req, res) => {
     try {
         const studentsDocuments = await Student.find({ courseYear: req.body.courseYear }).sort({ lastName: 1, firstName: 1 });

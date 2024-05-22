@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// Create the schema using the generic constructor
+// Student schema
 const studentSchema = new mongoose.Schema({
     studentNumber: { type: Number, required: true },
     firstName: { type: String, required: true },
